@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bar do Arromba</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" media="screen" title="no title" charset="utf-8">
+    <script src="https://code.jquery.com/jquery-2.2.4.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <meta name="robots" content="noindex, follow" />
+  </head>
+  <script>
+    var buy = [];
+  </script>
+  <body>
+    <div class="shopping-cart">
+      <div class="title">
+        <small>Faça seu pedido comigo :-)</small>
+      </div>
+
+      {% for product in products %}
+      <div class="item">
+        <div class="image">
+          <img src="{{product.sku}}.png" alt="" />
+        </div>
+
+        <div class="description">
+          <span>{{ product.description }}</span>
+        </div>
+
+        <div class="quantity">
+          <button class="plus-btn" type="button" name="button">
+            <img src="plus.svg" alt="Adicionar quantidade do produto {{ product.name }}" />
+          </button>
+          <input id="{{product.sku}}" type="text" name="name" value="0" readonly>
+          <button class="minus-btn" type="button" name="button">
+            <img src="minus.svg" alt="Diminuir quantidade do produto {{ product.name }}" />
+          </button>
+        </div>
+
+        <div class="total-price" id="{{ product.sku }}-price">R$ {{ product.price }}</div>
+      </div>
+      {% endfor %}
+      <div class="item">
+        <input class="member-input" placeholder="Código Arrombástico" type="text" maxlength="3" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+        <small class="member-input" id="total">Total: R$ 0</small>
+        <button class="checkout">Checkout</button>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      $(document).click(function() {
+        if (buy.length === 0) {
+          return true;
+        }
+
+        let prices = buy.map(i => { 
+          if (i.qty > 0) return i.price * i.qty;
+        });
+
+        let total = parseFloat (
+          prices.reduce((a, b=0) => a + b, 0),
+          2
+        ).toFixed(2);
+
+        $("#total").html(`R$ ${total}`);
+      });
+
+      $('.checkout').on('click', function(e) {
+        try {
+          var $this = $(this);
+          var $input = $this.closest('div').find('input');
+          var value = parseInt($input.val());
+
+          if (!value || buy.length === 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Perdeu a prova gincaneiro :(',
+              text: 'Código Arrombástico ou sem itens selecionados.'
+            });
+
+            return false;
+          }
+
+          $.ajax({
+            type: 'POST',
+            url: '/process/order',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({
+              member: value,
+              buy: buy.filter(i => i.qty > 0)
+            }),
+            success: (response, status) => {
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Pedido processado com sucesso!',
+                html: `Pedido: ${response.order_id}`,
+                showConfirmButton: false,
+                timer: 5000
+              })
+              console.log (response)
+            },
+            error: (response) => {
+             Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Oops, parece que não consegui processar seu pedido',
+                html: 'Tente novamente',
+                showConfirmButton: false,
+                timer: 5000
+              })
+            }
+          })
+          // window.location.replace('http://localhost:5000')
+        } catch (e) {
+          throw new Error (e)
+        }
+      });
+      $('.minus-btn').on('click', function(e) {
+    		e.preventDefault();
+    		var $this = $(this);
+    		var $input = $this.closest('div').find('input');
+    		var value = parseInt($input.val());
+
+        let sku = $this.closest('div').find('input').attr('id');
+        let price = Number  (
+          $(`#${sku}-price`).text().replace('R$', '')
+        );
+
+    		if (value > 1) {
+    			value = value - 1;
+    		} else {
+    			value = 0;
+    		}
+
+        let item = buy.findIndex(i => (i && i.sku === sku));
+        if (item > -1) {
+          buy[item].sku = sku;
+          buy[item].qty = value;
+          buy[item].price = price;
+        } else {
+          buy.push({
+            sku,
+            price,
+            qty: value
+          });
+        }
+
+        $input.val(value);
+    	});
+
+    	$('.plus-btn').on('click', function(e) {
+    		e.preventDefault();
+    		var $this = $(this);
+    		var $input = $this.closest('div').find('input');
+    		var value = parseInt($input.val());
+
+        let sku = $this.closest('div').find('input').attr('id');
+        let price = Number (
+          $(`#${sku}-price`).text().replace('R$', '')
+        );
+
+    		if (value > 20) {
+    			value = 20;
+    		} else {
+    			value += 1;
+    		}
+
+        let item = buy.findIndex(i => (i && i.sku === sku));
+        if (item > -1) {
+          buy[item].sku = sku;
+          buy[item].qty = value;
+          buy[item].price = price;
+        } else {
+          buy.push({
+            sku,
+            price,
+            qty: value
+          });
+        }
+
+    		$input.val(value);
+    	});
+    </script>
+  </body>
+</html>
