@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+	<title>Bar - Admin</title>
+</head>
+<body>
+	<script>
+		function viewProducts(products, orderId) {
+			let tbody = ``
+			for (let product of products) {
+				tbody += `
+				  <tr>
+					<td>${product.name}</td>
+					<td>${product.qty}</td>
+					<td>${product.price}</td>
+					<td>${product.qty * product.price}</td>
+				  </tr>
+				`
+			}
+
+			Swal.fire({
+				title: `Produtos do Pedido ${orderId}`,
+				html: `
+				<table class="table table-striped">
+					<thead>
+					  <tr>
+						<th scope="col">Nome</th>
+						<th scope="col">Qty</th>
+						<th scope="col">Preço</th>
+						<th scope="col">Total</th>
+					  </tr>
+					</thead>
+					<tbody>
+						${tbody}
+					<tbody>
+				</table>
+				`
+			})
+		}
+	</script>
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver1">
+					<div class="table100-firstcol">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									<th class="cell100 column1">Arrombástico</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for member in members %}
+								<tr class="row100 body">
+									<td class="cell100 column1">{{ member.name }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<div class="wrap-table100-nextcols js-pscroll">
+						<div class="table100-nextcols">
+							<table>
+								<thead>
+									<tr class="row100 head">
+										<th class="cell100 column2">Código</th>
+										<th class="cell100 column3">Data</th>
+										<th class="cell100 column4">Valor</th>
+										<th class="cell100 column5">Produtos</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for order in orders %}
+									<tr class="row100 body">
+										<td class="cell100 column2">{{ order.order_id }}</td>
+										<td class="cell100 column3">{{ order.created_at }}</td>
+										<td class="cell100 column4">{{ order.total_value }}</td>
+										<td class="cell100 column5">
+											<button onclick="viewProducts({{ order.products }}, {{ order.order_id }})">
+												Ver
+											</button>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="vendor/select2/select2.min.js"></script>
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+
+			$(this).on('ps-x-reach-start', function(){
+				$(this).parent().find('.table100-firstcol').removeClass('shadow-table100-firstcol');
+			});
+
+			$(this).on('ps-scroll-x', function(){
+				$(this).parent().find('.table100-firstcol').addClass('shadow-table100-firstcol');
+			});
+
+		});	
+	</script>
+	<script src="js/main.js"></script>
+</body>
+</html>

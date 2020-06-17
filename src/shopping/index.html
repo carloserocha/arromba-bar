@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bar do Arromba</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" media="screen" title="no title" charset="utf-8">
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAB01+gAAAAAAAXC4wDr8/UAtsnMAA/n8gBNzeMA2OHjAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESYAJgJgERERJgAmAmARERElACZycCIiESV2dnJwd3IRJXJ2cnARchEmcnJycBFyESZydnVwEXIRJXJ1dXARchElcnVycBFyESUCJXJwEXIRJQIlcmB3chEiIiIiIiIiESVVVVUicRERREMzMzRxERFDMzMzNBEREUREREREERHADwAAwA8AAMAAAADAAAAAwAwAAMAMAADADAAAwAwAAMAMAADADAAAwAAAAMAAAADABwAAwAcAAMAPAADADwAA" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="css/style.css" media="screen" title="no title" charset="utf-8">
     <script src="https://code.jquery.com/jquery-2.2.4.js" charset="utf-8"></script>
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
@@ -22,7 +23,7 @@
       {% for product in products %}
       <div class="item">
         <div class="image">
-          <img src="{{product.sku}}.png" alt="" />
+          <img src="images/{{product.sku}}.png" alt="" />
         </div>
 
         <div class="description">
@@ -32,11 +33,11 @@
 
         <div class="quantity">
           <button class="plus-btn" type="button" name="button">
-            <img src="plus.svg" alt="Adicionar quantidade do produto {{ product.name }}" />
+            <img src="images/icons/plus.svg" alt="Adicionar quantidade do produto {{ product.name }}" />
           </button>
           <input id="{{product.sku}}" type="text" name="name" value="0" readonly>
           <button class="minus-btn" type="button" name="button">
-            <img src="minus.svg" alt="Diminuir quantidade do produto {{ product.name }}" />
+            <img src="images/icons/minus.svg" alt="Diminuir quantidade do produto {{ product.name }}" />
           </button>
         </div>
 

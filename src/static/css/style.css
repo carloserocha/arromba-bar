@@ -34,6 +34,10 @@ body {
   font-weight: 400;
 }
 
+.reverse-title {
+  text-align: end;
+}
+
 .item {
   padding: 20px 30px;
   height: 120px;
@@ -59,19 +63,6 @@ body {
   height: 17px;
   background: url("delete-icn.svg") no-repeat center;
   margin-right: 20px;
-}
-
-.like-btn {
-  position: absolute;
-  top: 9px;
-  left: 15px;
-  display: inline-block;
-  background: url('twitter-heart.png');
-  width: 60px;
-  height: 60px;
-  background-size: 2900%;
-  background-repeat: no-repeat;
-  cursor: pointer;
 }
 
 .is-active {
